@@ -4,6 +4,7 @@ from .database import users_collection
 from .utils import hash_password
 from .auth import authenticate_user
 from bson import ObjectId
+from .auth import get_current_user
 
 router = APIRouter()
 
@@ -18,7 +19,7 @@ async def register_user(user: UserCreate):
     return {"id": str(result.inserted_id), "message": "User registered successfully"}
 
 @router.put("/update/{user_id}")
-async def update_user(user_id: str, user: UserUpdate):
+async def update_user(user_id: str, user: UserUpdate, userData: dict = Depends(get_current_user)):
     updates = {k: v for k, v in user.dict().items() if v is not None}
     if "password" in updates:
         updates["password"] = hash_password(updates["password"])
