@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from .models import UserCreate, UserUpdate, UserLogin
+from .models import UserCreate, UserUpdate, UserLogin, StudentCreate, StudentUpdate
 from .database import users_collection
 from .utils import hash_password
 from .auth import authenticate_user
@@ -31,3 +31,19 @@ async def update_user(user_id: str, user: UserUpdate, userData: dict = Depends(g
 @router.post("/login")
 async def login_user(login_data: UserLogin):
     return await authenticate_user(login_data.username_or_email, login_data.password)
+
+
+@router.post("/students/")
+async def add_student(student:StudentCreate, image:UploadFile = File(...)):
+    filename = f"{student.firstname}_{student.lastname}.{image.filename.split(".")[-1]}"
+    dir_path = Path(BASE_UPLOAD_DIR) / studnet.session / f"{student.firstname}_{student.lastname}"
+    dir_path.mkdir(parent=True, exist_ok=True)
+    file_path = dir_path / filename
+
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(image.file, buffer)
+
+    student_dict = student.dict()
+    student_dict["image_name"] = str(file_path)
+    result = await students_collection.inset_one(student_dist)
+    return {"id": str(result.inserted_id), "messaqe":"Student created"}
