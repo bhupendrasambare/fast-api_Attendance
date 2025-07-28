@@ -2,8 +2,8 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 import os
-from .database import users_collection
-from .utils import verify_password, create_access_token
+from app.database import users_collection
+from app.utils import verify_password, create_access_token
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
 
