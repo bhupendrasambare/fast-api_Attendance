@@ -1,1 +1,37 @@
-/venv
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# dotenv environment files
+.env
+.env.*
+
+# Uploaded media files
+uploads/
+
+# VS Code settings
+.vscode/
+
+# macOS files
+.DS_Store
+
+# Logs
+*.log
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+
+# mypy and pyright
+.mypy_cache/
+.pyright/
+
+# Pytest
+.cache/
