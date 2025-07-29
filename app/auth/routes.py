@@ -6,7 +6,7 @@ from app.auth.auth import authenticate_user
 from bson import ObjectId
 from app.auth.auth import get_current_user
 
-router = APIRouter(prefix="/auth", tags=["Auth"])
+router = APIRouter(prefix="/auth", tags=["1. Auth"])
 
 @router.post("/register")
 async def register_user(user: UserCreate):
