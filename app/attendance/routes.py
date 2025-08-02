@@ -5,7 +5,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 from app.database import students_collection
 from pathlib import Path
 
-router = APIRouter(prefix="/attendance", tags=["Attendance"])
+router = APIRouter(prefix="/attendance", tags=["3. Attendance"])
 
 @router.post("/check-attendance")
 async def check_attendance_by_image(group_image: UploadFile = File(...)):
