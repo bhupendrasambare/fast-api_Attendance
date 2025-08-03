@@ -42,3 +42,21 @@ body {
     display: none;
   }
 }
+
+.dashboard_card{
+  width: 15rem;
+  background-color: rgb(0, 0, 0, 1);
+}
+
+.dark_bg_1{
+  background-color: rgb(0, 0, 0, 1);
+}
+.dark_bg_2{
+  background-color: rgb(0, 0, 0, 0.8);
+}
+.dark_bg_3{
+  background-color: rgb(0, 0, 0, 0.7);
+}
+.dark_bg_4{
+  background-color: rgb(0, 0, 0, 0.6);
+}

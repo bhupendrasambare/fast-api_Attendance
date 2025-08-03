@@ -6,6 +6,7 @@ import "./App.css"
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Students from './pages/Students';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ToastContainer, Zoom } from 'react-toastify';
 
@@ -44,6 +45,16 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Protect Dashboard */}
+        <Route
+          path="/students"
+          element={
+            <ProtectedRoute>
+              <Students />
             </ProtectedRoute>
           }
         />
