@@ -119,12 +119,12 @@ const Login = () => {
             <Form onSubmit={handelRegister}>
 
                   <Form.Group className="mb-3" controlId="forFirstName">
-                    <Form.Label>FirstName</Form.Label>
+                    <Form.Label>First name</Form.Label>
                     <Form.Control placeholder="Enter first name"  onChange={(e) => setFirstName(e.target.value)} />
                   </Form.Group>
 
                   <Form.Group className="mb-3" controlId="forLastName">
-                    <Form.Label>LastName</Form.Label>
+                    <Form.Label>Last name</Form.Label>
                     <Form.Control placeholder="Enter last name"  onChange={(e) => setLastName(e.target.value)} />
                   </Form.Group>
 
