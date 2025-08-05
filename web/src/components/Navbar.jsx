@@ -58,7 +58,7 @@ const NavigationBar = ({ children }) => {
               <Nav className="ms-auto">
                 <div className="d-flex justify-content-around align-items-center">
                     <Link to="/profile"><FaRegUserCircle size={22} className="me-2 text-decoration-none" title="Profile"/></Link>
-                    <Link to={()=>logout()}><IoMdExit size={24} className="me-2 text-decoration-none" title="Logout"/></Link>
+                    <Link onClick={()=>logout()}><IoMdExit size={24} className="me-2 text-decoration-none" title="Logout"/></Link>
                 </div>
               </Nav>
           </Container>
