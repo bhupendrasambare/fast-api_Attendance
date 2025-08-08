@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-const TOKEN_EXPIRY_MS = 1 * 1 * 60 * 1000; // 24 hours in milliseconds
+const TOKEN_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
 let logoutTimeout;
 
