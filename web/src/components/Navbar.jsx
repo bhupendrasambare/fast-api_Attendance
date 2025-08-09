@@ -32,7 +32,7 @@ const NavigationBar = ({ children }) => {
         }}
       >
         <div style={{ padding: "10px" }} className="d-flex w-100 justify-content-end">
-          <Button variant="secondary" to={toggleSidebar} size="lg">
+          <Button variant="secondary" onClick={toggleSidebar} size="lg">
             {collapsed ? "»" : "«"}
           </Button>
         </div>
@@ -53,8 +53,8 @@ const NavigationBar = ({ children }) => {
       <div style={{ flex: 1 }}>
         {/* Navbar */}
         <Navbar bg="dark" variant="dark" expand="lg">
-            <Navbar.Brand className="ms-3">My App</Navbar.Brand>
           <Container>
+            <Navbar.Brand className="ms-3">My App</Navbar.Brand>
               <Nav className="ms-auto">
                 <div className="d-flex justify-content-around align-items-center">
                     <Link to="/profile"><FaRegUserCircle size={22} className="me-2 text-decoration-none" title="Profile"/></Link>
