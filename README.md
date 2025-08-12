@@ -1,4 +1,4 @@
-## 📘 Attendance Management System
+## Attendance Management System
 
 A full-stack **Attendance Management System** built with:
 
@@ -8,7 +8,7 @@ A full-stack **Attendance Management System** built with:
 
 ---
 
-## 🖥️ Backend (FastAPI)
+## Backend (FastAPI)
 
 ### ✅ Features
 
@@ -47,7 +47,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 ---
 
-## 🌐 Frontend (React)
+## Frontend (React)
 
 ### ✅ Features
 
@@ -95,7 +95,7 @@ npm start
 
 ---
 
-## 🧪 Sample API Endpoints
+## Sample API Endpoints
 
 | Method | Endpoint             | Description          |
 | ------ | -------------------- | -------------------- |
@@ -106,7 +106,7 @@ npm start
 
 ---
 
-## 🔗 Technologies Used
+## Technologies Used
 
 | Frontend        | Backend         | Other                 |
 | --------------- | --------------- | --------------------- |
@@ -115,11 +115,6 @@ npm start
 | React Router    | Pydantic        | React-Toastify        |
 | React Spinners  | CORS Middleware | Axios                 |
 
----
-
-## 📸 Screenshot Example
-
-> *(Optional)* Include screenshots of login page, dashboard, student card list, etc.
 
 ---
 
