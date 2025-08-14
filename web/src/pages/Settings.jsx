@@ -4,7 +4,7 @@ import NavigationBar from '../components/Navbar'
 const Settings = () => {
   return (
     <NavigationBar>
-        Home
+        Settings
     </NavigationBar>
   )
 }
