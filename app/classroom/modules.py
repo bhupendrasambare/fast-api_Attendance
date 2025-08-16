@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
+from bson.objectid import ObjectId
 
 class createSession(BaseModel):
     start_year:str
@@ -12,4 +13,6 @@ class updateSession(BaseModel):
     active:bool
 
 class createClassRoom(BaseModel):
+    class_name:str
+    session: ObjectId
     
