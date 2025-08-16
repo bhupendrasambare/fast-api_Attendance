@@ -11,3 +11,5 @@ class updateSession(BaseModel):
     end_year:str
     active:bool
 
+class createClassRoom(BaseModel):
+    
