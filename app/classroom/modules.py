@@ -16,3 +16,7 @@ class createClassRoom(BaseModel):
     class_name:str
     session: ObjectId
     
+class createSection(BaseModel):
+    class_room:ObjectId
+    secction_name:str
+    session: ObjectId
