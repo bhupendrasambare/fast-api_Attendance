@@ -3,6 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from app.auth.routes import router as auth_router
 from app.students.routes import router as student_router
 from app.attendance.routes import router as attendance_router
+from app.classroom.routes import session_router, classroom_router, section_router
 import os
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -26,6 +27,9 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(student_router, prefix="/api/v1")
 app.include_router(attendance_router, prefix="/api/v1")
+app.include_router(session_router, prefix="/api/v1")
+app.include_router(classroom_router, prefix="/api/v1")
+app.include_router(section_router, prefix="/api/v1")
 
 UPLOAD_DIR = os.getenv("LOCAL_LOCATION")  # should be absolute path
 app.mount("/upload", StaticFiles(directory=UPLOAD_DIR), name="upload")

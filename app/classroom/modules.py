@@ -1,22 +1,25 @@
 from pydantic import BaseModel
 from typing import Optional
-from bson.objectid import ObjectId
+from bson import ObjectId
 
-class createSession(BaseModel):
-    start_year:str
-    end_year:str
-    active:bool
+# ---------------- SESSION ----------------
+class CreateSession(BaseModel):
+    start_year: str
+    end_year: str
+    active: bool
 
-class updateSession(BaseModel):
-    start_year:str
-    end_year:str
-    active:bool
+class UpdateSession(BaseModel):
+    start_year: Optional[str] = None
+    end_year: Optional[str] = None
+    active: Optional[bool] = None
 
-class createClassRoom(BaseModel):
-    class_name:str
+# ---------------- CLASSROOM ----------------
+class CreateClassRoom(BaseModel):
+    classroom_name: str
     session: ObjectId
-    
-class createSection(BaseModel):
-    class_room:ObjectId
-    secction_name:str
+
+# ---------------- SECTION ----------------
+class CreateSection(BaseModel):
+    class_room: ObjectId
+    section_name: str
     session: ObjectId
