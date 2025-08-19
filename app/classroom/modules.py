@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from typing import Optional
-from bson import ObjectId
 
 # ---------------- SESSION ----------------
 class CreateSession(BaseModel):
@@ -16,10 +15,10 @@ class UpdateSession(BaseModel):
 # ---------------- CLASSROOM ----------------
 class CreateClassRoom(BaseModel):
     classroom_name: str
-    session: ObjectId
+    session: str
 
 # ---------------- SECTION ----------------
 class CreateSection(BaseModel):
-    class_room: ObjectId
+    class_room: str
     section_name: str
-    session: ObjectId
+    session: str

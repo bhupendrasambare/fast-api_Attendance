@@ -9,17 +9,17 @@ from app.database import (
 )
 from app.classroom.modules import CreateSession, UpdateSession, CreateClassRoom, CreateSection
 
-session_router = APIRouter(prefix="/sessions", tags=["Sessions"])
-classroom_router = APIRouter(prefix="/classrooms", tags=["Classrooms"])
-section_router = APIRouter(prefix="/sections", tags=["Sections"])
+session_router = APIRouter(prefix="/sessions", tags=["4. Sessions"])
+classroom_router = APIRouter(prefix="/classrooms", tags=["5. Classrooms"])
+section_router = APIRouter(prefix="/sections", tags=["6. Sections"])
 
 
 # ---------------- SESSION ROUTES ----------------
 @session_router.post("/", response_model=dict)
 async def create_session(session: CreateSession):
-    session_data = session.dict()
-    result = await sessions_collection.insert_one(session_data)
-    return {"id": str(result.inserted_id), **session_data}
+    session = session.dict()
+    result = await sessions_collection.insert_one(session)
+    return {"id":str(result.inserted_id), "message":"Session created"}
 
 
 @session_router.get("/", response_model=List[dict])
