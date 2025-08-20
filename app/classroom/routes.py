@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException
-from typing import List
+from fastapi import Query, APIRouter, HTTPException
+from typing import Optional, List
 from bson import ObjectId
 
 from app.database import (
@@ -33,11 +33,22 @@ async def get_sessions():
 @session_router.put("/{session_id}", response_model=dict)
 async def update_session(session_id: str, session: UpdateSession):
     update_data = {k: v for k, v in session.dict().items() if v is not None}
+
+    # ✅ check for duplicates
+    duplicate = await sessions_collection.find_one({
+        "start_year": update_data["start_year"],
+        "end_year": update_data["end_year"],
+        "_id": {"$ne": ObjectId(session_id)}  # exclude current session
+    })
+    if duplicate:
+        raise HTTPException(status_code=400, detail="A session with the same start and end year already exists")
+
     result = await sessions_collection.update_one(
         {"_id": ObjectId(session_id)}, {"$set": update_data}
     )
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Session not found")
+
     return {"id": session_id, **update_data}
 
 
@@ -53,15 +64,46 @@ async def delete_session(session_id: str):
 @classroom_router.post("/", response_model=dict)
 async def create_classroom(classroom: CreateClassRoom):
     data = classroom.dict()
+
+    # Validate session if provided
+    if "session" in data and data["session"]:
+        if not ObjectId.is_valid(data["session"]):
+            raise HTTPException(status_code=400, detail="Invalid session id")
+        session = await sessions_collection.find_one({"_id": ObjectId(data["session"])})
+        if not session:
+            raise HTTPException(status_code=400, detail="Session not found")
+        data["session"] = str(data["session"])
+
+    # Check for duplicate classroom (same classroom_name + same session)
+    existing_classroom = await classrooms_collection.find_one({
+        "classroom_name": data["classroom_name"],
+        "session": data.get("session")
+    })
+    if existing_classroom:
+        raise HTTPException(
+            status_code=400,
+            detail="Classroom with this name already exists in the given session"
+        )
+
+    # Insert new classroom
     result = await classrooms_collection.insert_one(data)
-    return {"id": str(result.inserted_id), **data}
+    return {"id": str(result.inserted_id), "message": "Classroom created successfully"}
 
 
 @classroom_router.get("/", response_model=List[dict])
-async def get_classrooms():
-    classrooms = await classrooms_collection.find().to_list(100)
+async def get_classrooms(session_id: Optional[str] = Query(None)):
+    query = {}
+
+    if session_id:
+        if not ObjectId.is_valid(session_id):
+            raise HTTPException(status_code=400, detail="Invalid session_id")
+        query["session"] = session_id
+
+    classrooms = await classrooms_collection.find(query).to_list(100)
+
     for c in classrooms:
         c["_id"] = str(c["_id"])
+
     return classrooms
 
 
