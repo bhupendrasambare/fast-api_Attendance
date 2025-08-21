@@ -34,7 +34,6 @@ async def get_sessions():
 async def update_session(session_id: str, session: UpdateSession):
     update_data = {k: v for k, v in session.dict().items() if v is not None}
 
-    # ✅ check for duplicates
     duplicate = await sessions_collection.find_one({
         "start_year": update_data["start_year"],
         "end_year": update_data["end_year"],
@@ -65,7 +64,6 @@ async def delete_session(session_id: str):
 async def create_classroom(classroom: CreateClassRoom):
     data = classroom.dict()
 
-    # Validate session if provided
     if "session" in data and data["session"]:
         if not ObjectId.is_valid(data["session"]):
             raise HTTPException(status_code=400, detail="Invalid session id")
@@ -74,7 +72,6 @@ async def create_classroom(classroom: CreateClassRoom):
             raise HTTPException(status_code=400, detail="Session not found")
         data["session"] = str(data["session"])
 
-    # Check for duplicate classroom (same classroom_name + same session)
     existing_classroom = await classrooms_collection.find_one({
         "classroom_name": data["classroom_name"],
         "session": data.get("session")
@@ -85,7 +82,6 @@ async def create_classroom(classroom: CreateClassRoom):
             detail="Classroom with this name already exists in the given session"
         )
 
-    # Insert new classroom
     result = await classrooms_collection.insert_one(data)
     return {"id": str(result.inserted_id), "message": "Classroom created successfully"}
 
@@ -101,23 +97,66 @@ async def get_classrooms(session_id: Optional[str] = Query(None)):
 
     classrooms = await classrooms_collection.find(query).to_list(100)
 
+    results = []
     for c in classrooms:
         c["_id"] = str(c["_id"])
+        
+        session = await sessions_collection.find_one({"_id": ObjectId(c["session"])})
+        if session:
+            session["_id"] = str(session["_id"])
+            c["session"] = session
+        results.append(c)
 
-    return classrooms
+    return results
 
 
 # ---------------- SECTION ROUTES ----------------
 @section_router.post("/", response_model=dict)
 async def create_section(section: CreateSection):
+    
+    if not ObjectId.is_valid(section.class_room):
+        raise HTTPException(status_code=400, detail="Invalid class_room id")
+    if not ObjectId.is_valid(section.session):
+        raise HTTPException(status_code=400, detail="Invalid session id")
+
+    classroom = await classrooms_collection.find_one({"_id": ObjectId(section.class_room)})
+    if not classroom:
+        raise HTTPException(status_code=404, detail="Classroom not found")
+
+
+    duplicate = await sections_collection.find_one({
+        "class_room": section.class_room,
+        "session": section.session,
+        "section_name": section.section_name
+    })
+    if duplicate:
+        raise HTTPException(status_code=400, detail="Section already exists for this classroom in the same session")
+
     data = section.dict()
     result = await sections_collection.insert_one(data)
-    return {"id": str(result.inserted_id), **data}
+
+    classroom["_id"] = str(classroom["_id"])
+    session = await sessions_collection.find_one({"_id": ObjectId(classroom["session"])})
+    if session:
+        session["_id"] = str(session["_id"])
+        classroom["session"] = session
+
+    return {"id": str(result.inserted_id), "class_room": classroom}
 
 
 @section_router.get("/", response_model=List[dict])
 async def get_sections():
     sections = await sections_collection.find().to_list(100)
+    results = []
     for s in sections:
         s["_id"] = str(s["_id"])
-    return sections
+        classroom = await classrooms_collection.find_one({"_id": ObjectId(s["class_room"])})
+        if classroom:
+            classroom["_id"] = str(classroom["_id"])
+            session = await sessions_collection.find_one({"_id": ObjectId(classroom["session"])})
+            if session:
+                session["_id"] = str(session["_id"])
+                classroom["session"] = session
+            s["class_room"] = classroom
+        results.append(s)
+    return results
