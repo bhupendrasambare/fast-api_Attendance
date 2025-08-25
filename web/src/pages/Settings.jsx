@@ -1,13 +1,35 @@
-import React from 'react'
+import React, { useState } from 'react'
 import NavigationBar from '../components/Navbar'
 
 const Settings = () => {
+
+    const [sessionId, setSessionId] = useState();
+    const [classroomId, setClassroomId] = useState();
+    const [sectionId, setSectionId] = useState();
+
+    const [sessions,setSessions] = useState([])
+    const [classrooms, setClassRooms] = useState([])
+    const [sections, setSections] = useState([])
+
   return (
     <NavigationBar>
-        <div className="shadow-lg py-3 px-1 mx-1 rounded">
-            <h5 className="fw-bold m-2">Sessions</h5>
 
+        <div className="w-100 ps-2">
+            
+            <div className="row d-flex flwx-wrap justify-content-center ">
+                <div className="col-sm-6">
+                    <div className="shadow-lg py-3 px-1 mx-1 rounded">
+                        <h5 className="fw-bold m-2">Classroom</h5>
+                    </div>
+                </div>
+                <div className="col-sm-6">
+                    <div className="shadow-lg py-3 px-1 mx-1 rounded">
+                        <h5 className="fw-bold m-2">Section</h5>
+                    </div>
+                </div>
+            </div>
         </div>
+
     </NavigationBar>
   )
 }
