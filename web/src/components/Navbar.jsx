@@ -20,54 +20,73 @@ const NavigationBar = ({ children }) => {
     }
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
-      {/* Sidebar */}
-      <div
-        style={{
-          width: collapsed ? "60px" : "220px",
-          background: "#343a40",
-          color: "#fff",
-          transition: "width 0.3s ease",
-          overflow: "hidden",
-        }}
-      >
-        <div style={{ padding: "10px" }} className="d-flex w-100 justify-content-end">
-          <Button variant="secondary" onClick={toggleSidebar} size="lg">
-            {collapsed ? "»" : "«"}
-          </Button>
-        </div>
-        <Nav className="flex-column p-2 justify-content-center">
-          <Link to="/dashboard" style={{ color: "#fff" }} className="my-2 text-decoration-none">
-            <FaHome size={26} className="me-2"/>{collapsed? "":"Dashboard" }
-          </Link>
-          <Link to="/students" style={{ color: "#fff" }} className="my-2 text-decoration-none">
-            <FaUserFriends size={26} className="me-2"/>{collapsed? "":"Students" }
-          </Link>
-          <Link to="/settings" style={{ color: "#fff" }} className="my-2 text-decoration-none">
-            <IoSettings size={26} className="me-2"/>{collapsed? "":"Settings" }
-          </Link>
-        </Nav>
-      </div>
 
-      {/* Main content */}
-      <div style={{ flex: 1 }}>
-        {/* Navbar */}
-        <Navbar bg="dark" variant="dark" expand="lg">
-          <Container>
-            <Navbar.Brand className="ms-3">My App</Navbar.Brand>
-              <Nav className="ms-auto">
-                <div className="d-flex justify-content-around align-items-center">
-                    <Link to="/profile"><FaRegUserCircle size={22} className="me-2 text-decoration-none" title="Profile"/></Link>
-                    <Link onClick={()=>logout()}><IoMdExit size={24} className="me-2 text-decoration-none" title="Logout"/></Link>
-                </div>
-              </Nav>
-          </Container>
+    <div className="">
+        <Navbar  bg="dark" variant="dark" expand="lg">
+            <Container>
+                <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="ms-auto">
+                   <Link to="/dashboard" style={{ color: "#fff" }} className="my-2 mx-2 text-decoration-none">
+                     {/* <FaHome size={26} className="me-2"/> */}Dashboard
+                   </Link>
+                   <Link to="/students" style={{ color: "#fff" }} className="my-2 mx-2 text-decoration-none">
+                     {/* <FaUserFriends size={26} className="me-2"/> */}Students
+                   </Link>
+                   <Link to="/settings" style={{ color: "#fff" }} className="my-2 mx-2 text-decoration-none">
+                     {/* <IoSettings size={26} className="me-2"/> */}Settings
+                   </Link>
+                   <div onClick={()=>logout()} style={{ color: "#fff" }} className="my-2 mx-2 text-decoration-none">
+                     {/* <IoSettings size={26} className="me-2"/> */}Logout
+                   </div>
+                </Nav>
+                </Navbar.Collapse>
+            </Container>
         </Navbar>
 
-        {/* Page Content */}
-        <div className="mt-3">{children}</div>
-      </div>
-    </div>
+        <div className="mt-3 container">{children}</div>
+
+        </div>
+
+    // <div style={{ display: "flex", height: "100vh" }}>
+    //   {/* Sidebar */}
+    //   <div
+    //     style={{
+    //       width: collapsed ? "60px" : "220px",
+    //       background: "#343a40",
+    //       color: "#fff",
+    //       transition: "width 0.3s ease",
+    //       overflow: "hidden",
+    //     }}
+    //   >
+    //     <div style={{ padding: "10px" }} className="d-flex w-100 justify-content-end">
+    //       <Button variant="secondary" onClick={toggleSidebar} size="lg">
+    //         {collapsed ? "»" : "«"}
+    //       </Button>
+    //     </div>
+    //     <Nav className="flex-column p-2 justify-content-center">
+
+    //     </Nav>
+    //   </div>
+
+    //   {/* Main content */}
+    //   <div style={{ flex: 1 }}>
+    //     {/* Navbar */}
+    //     <Navbar>
+    //       <Container>
+    //         <Navbar.Brand className="ms-3">My App</Navbar.Brand>
+    //           <Nav className="ms-auto">
+    //             <div className="d-flex justify-content-around align-items-center">
+    //                 <Link to="/profile"><FaRegUserCircle size={22} className="me-2 text-decoration-none" title="Profile"/></Link>
+    //                 <Link onClick={()=>logout()}><IoMdExit size={24} className="me-2 text-decoration-none" title="Logout"/></Link>
+    //             </div>
+    //           </Nav>
+    //       </Container>
+    //     </Navbar>
+
+    //   </div>
+    // </div>
   );
 };
 
