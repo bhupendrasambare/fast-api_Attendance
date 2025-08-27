@@ -48,45 +48,6 @@ const NavigationBar = ({ children }) => {
         <div className="mt-3 container">{children}</div>
 
         </div>
-
-    // <div style={{ display: "flex", height: "100vh" }}>
-    //   {/* Sidebar */}
-    //   <div
-    //     style={{
-    //       width: collapsed ? "60px" : "220px",
-    //       background: "#343a40",
-    //       color: "#fff",
-    //       transition: "width 0.3s ease",
-    //       overflow: "hidden",
-    //     }}
-    //   >
-    //     <div style={{ padding: "10px" }} className="d-flex w-100 justify-content-end">
-    //       <Button variant="secondary" onClick={toggleSidebar} size="lg">
-    //         {collapsed ? "»" : "«"}
-    //       </Button>
-    //     </div>
-    //     <Nav className="flex-column p-2 justify-content-center">
-
-    //     </Nav>
-    //   </div>
-
-    //   {/* Main content */}
-    //   <div style={{ flex: 1 }}>
-    //     {/* Navbar */}
-    //     <Navbar>
-    //       <Container>
-    //         <Navbar.Brand className="ms-3">My App</Navbar.Brand>
-    //           <Nav className="ms-auto">
-    //             <div className="d-flex justify-content-around align-items-center">
-    //                 <Link to="/profile"><FaRegUserCircle size={22} className="me-2 text-decoration-none" title="Profile"/></Link>
-    //                 <Link onClick={()=>logout()}><IoMdExit size={24} className="me-2 text-decoration-none" title="Logout"/></Link>
-    //             </div>
-    //           </Nav>
-    //       </Container>
-    //     </Navbar>
-
-    //   </div>
-    // </div>
   );
 };
 
