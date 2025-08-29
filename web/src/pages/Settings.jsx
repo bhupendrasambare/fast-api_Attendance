@@ -11,6 +11,10 @@ const Settings = () => {
     const [classrooms, setClassRooms] = useState([])
     const [sections, setSections] = useState([])
 
+    useState({
+
+    },[])
+
   return (
     <NavigationBar>
 
