@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import NavigationBar from '../components/Navbar'
+import { Table } from 'react-bootstrap';
 
 const Settings = () => {
 
@@ -35,13 +36,50 @@ const Settings = () => {
             <div className="row d-flex flwx-wrap justify-content-center ">
                 <div className="col-sm-6">
                     <div className="shadow-lg py-3 px-1 mx-1 rounded">
-                        <h5 className="fw-bold m-2">Classroom</h5>
-                        
+                        <h5 className="fw-bold m-2">Classrooms</h5>
+                        <Table striped bordered hover>
+                            <thead>
+                                <tr>
+                                <th>Sr no.</th>
+                                <th>Session</th>
+                                <th>Session status</th>
+                                <th>Class name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1.</td>
+                                    <td>2019 - 2023</td>
+                                    <td>Active</td>
+                                    <td>XII</td>
+                                </tr>
+                            </tbody>
+                        </Table>
                     </div>
                 </div>
                 <div className="col-sm-6">
                     <div className="shadow-lg py-3 px-1 mx-1 rounded">
                         <h5 className="fw-bold m-2">Section</h5>
+                        <Table striped bordered hover>
+                            <thead>
+                                <tr>
+                                <th>Sr no.</th>
+                                <th>Session</th>
+                                <th>Session status</th>
+                                <th>Class name</th>
+                                <th>Section name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1.</td>
+                                    <td>2019 - 2023</td>
+                                    <td>Active</td>
+                                    <td>XII</td>
+                                    <td>A</td>
+                                </tr>
+                            </tbody>
+                        </Table>
                     </div>
                 </div>
             </div>
