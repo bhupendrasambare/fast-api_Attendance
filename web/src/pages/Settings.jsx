@@ -78,6 +78,27 @@ const Settings = () => {
                                     <td>XII</td>
                                     <td>A</td>
                                 </tr>
+                                <tr>
+                                    <td>1.</td>
+                                    <td>2019 - 2023</td>
+                                    <td>Active</td>
+                                    <td>XII</td>
+                                    <td>B</td>
+                                </tr>
+                                <tr>
+                                    <td>1.</td>
+                                    <td>2019 - 2023</td>
+                                    <td>Active</td>
+                                    <td>XII</td>
+                                    <td>C</td>
+                                </tr>
+                                <tr>
+                                    <td>1.</td>
+                                    <td>2019 - 2023</td>
+                                    <td>Active</td>
+                                    <td>XII</td>
+                                    <td>D</td>
+                                </tr>
                             </tbody>
                         </Table>
                     </div>
