@@ -1,16 +1,47 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import NavigationBar from '../components/Navbar'
 import { Table } from 'react-bootstrap';
 
 const Settings = () => {
 
-    const [sessionId, setSessionId] = useState();
-    const [classroomId, setClassroomId] = useState();
-    const [sectionId, setSectionId] = useState();
+const [sessionId, setSessionId] = useState("");
+  const [classroomId, setClassroomId] = useState("");
+  const [sectionId, setSectionId] = useState("");
 
-    const [sessions,setSessions] = useState([])
-    const [classrooms, setClassRooms] = useState([])
-    const [sections, setSections] = useState([])
+  const [sessions, setSessions] = useState([]);
+  const [classrooms, setClassrooms] = useState([]);
+  const [sections, setSections] = useState([]);
+
+  // 1. Fetch sessions on component load
+  useEffect(() => {
+    fetch("http://localhost:8000/api/v1/sessions/", {
+      headers: {
+        accept: "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setSessions(data);
+      })
+      .catch((err) => console.error("Error fetching sessions:", err));
+  }, []);
+
+  // 2. Fetch classrooms whenever sessionId changes
+  useEffect(() => {
+    if (!sessionId) return;
+
+    fetch(`http://localhost:8000/api/v1/classrooms/?session_id=${sessionId}`, {
+      headers: {
+        accept: "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setClassrooms(data);
+      })
+      .catch((err) => console.error("Error fetching classrooms:", err));
+  }, [sessionId]);
+
 
 
 
