@@ -52,12 +52,13 @@ const [sessionId, setSessionId] = useState("");
             
             <div className="d-flex justify-content-between my-3">
                 <div className="session-section">
-                    <button className="btn btn-success shadow-lg rounded-pill mx-2"> 2019 - 2023 </button>
-                    <button className="btn btn-light shadow-lg rounded-pill mx-2"> 2019 - 2023 </button>
-                    <button className="btn btn-light shadow-lg rounded-pill mx-2"> 2019 - 2023 </button>
-                    <button className="btn btn-light shadow-lg rounded-pill mx-2"> 2019 - 2023 </button>
-                    <button className="btn btn-light shadow-lg rounded-pill mx-2"> 2019 - 2023 </button>
-                    <button className="btn btn-light shadow-lg rounded-pill mx-2"> 2019 - 2023 </button>
+                    {sessions.map((session) => (
+                        <button onClick={()=>setSessionId(session._id)}
+                         className={("btn shadow-lg rounded-pill mx-2" +
+                            ((sessionId == session._id)?" btn-success ":" btn-light")
+                         )}>
+                       {session.start_year} - {session.end_year} </button>
+                    ))}
                 </div>
                 <div className="add-sessions">
                     <button className="btn btn-primary shadow-lg rounded-pill mx-2"> Add Session </button>
