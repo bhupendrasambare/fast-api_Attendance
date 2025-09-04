@@ -30,7 +30,7 @@ const [sessionId, setSessionId] = useState("");
   useEffect(() => {
     if (!sessionId) return;
 
-    fetch(`http://localhost:8000/api/v1/classrooms/?session_id=${sessionId}`, {
+    fetch(BASE_URL+`/classrooms/?session_id=${sessionId}`, {
       headers: {
         accept: "application/json",
       },
