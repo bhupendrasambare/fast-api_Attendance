@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import NavigationBar from '../components/Navbar'
 import { Table } from 'react-bootstrap';
+import { BASE_URL } from '../services/urls';
 
 const Settings = () => {
 
@@ -14,7 +15,7 @@ const [sessionId, setSessionId] = useState("");
 
   // 1. Fetch sessions on component load
   useEffect(() => {
-    fetch("http://localhost:8000/api/v1/sessions/", {
+    fetch(BASE_URL+"/sessions/", {
       headers: {
         accept: "application/json",
       },
