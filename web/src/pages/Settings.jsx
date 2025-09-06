@@ -29,17 +29,26 @@ const [sessionId, setSessionId] = useState("");
 
   // 2. Fetch classrooms whenever sessionId changes
   useEffect(() => {
-    if (!sessionId) return;
+    var url = "";
+    if (!sessionId){
+        url = BASE_URL+`/classrooms/`
+    }else{
+        url = BASE_URL+`/classrooms/?session_id=${sessionId}`;
+    }
 
-    fetch(BASE_URL+`/classrooms/?session_id=${sessionId}`, {
+    fetch(url, {
       headers: {
         accept: "application/json",
       },
     })
-      .then((res) => res.json())
-      .then((data) => {
-        setClassrooms(data);
-      })
+        .then((res) => res.json())
+        .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+            setClassrooms(data);
+        } else {
+            setClassrooms([]);
+        }
+        })
       .catch((err) => console.error("Error fetching classrooms:", err));
   }, [sessionId]);
 
@@ -80,12 +89,15 @@ const [sessionId, setSessionId] = useState("");
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1.</td>
-                                    <td>2019 - 2023</td>
-                                    <td>Active</td>
-                                    <td>XII</td>
-                                </tr>
+                                {classrooms.map((classroom) => (
+
+                                    <tr>
+                                        <td><input type="radio" name="" id="" /></td>
+                                        <td>{classroom?.session?.start_year} - {classroom?.session?.end_year}</td>
+                                        <td>Active</td>
+                                        <td>{classroom?.classroom_name}</td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </Table>
                     </div>
