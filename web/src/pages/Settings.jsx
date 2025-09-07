@@ -53,6 +53,18 @@ const [sessionId, setSessionId] = useState("");
   }, [sessionId]);
 
 
+    useEffect(() => {
+    fetch(BASE_URL+"/sections/", {
+        headers: {
+        accept: "application/json",
+        },
+    })
+        .then((res) => res.json())
+        .then((data) => {
+        setSections(data);
+        })
+        .catch((err) => console.error("Error fetching sections:", err));
+    }, []);
 
 
   return (
@@ -108,7 +120,6 @@ const [sessionId, setSessionId] = useState("");
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
-                                <th>Sr no.</th>
                                 <th>Session</th>
                                 <th>Session status</th>
                                 <th>Class name</th>
@@ -116,34 +127,17 @@ const [sessionId, setSessionId] = useState("");
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1.</td>
-                                    <td>2019 - 2023</td>
-                                    <td>Active</td>
-                                    <td>XII</td>
-                                    <td>A</td>
-                                </tr>
-                                <tr>
-                                    <td>1.</td>
-                                    <td>2019 - 2023</td>
-                                    <td>Active</td>
-                                    <td>XII</td>
-                                    <td>B</td>
-                                </tr>
-                                <tr>
-                                    <td>1.</td>
-                                    <td>2019 - 2023</td>
-                                    <td>Active</td>
-                                    <td>XII</td>
-                                    <td>C</td>
-                                </tr>
-                                <tr>
-                                    <td>1.</td>
-                                    <td>2019 - 2023</td>
-                                    <td>Active</td>
-                                    <td>XII</td>
-                                    <td>D</td>
-                                </tr>
+                                {sections.map((section) => (
+
+                                    <tr>
+                                        <td>{section.section_name}</td>
+                                        <td>{section?.class_room?.session?.start_year}
+                                             - {section?.class_room?.session?.end_year}</td>
+                                        <td>Active</td>
+                                        <td>{section.class_room?.classroom_name}</td>
+                                    </tr>
+                                ))}
+                                
                             </tbody>
                         </Table>
                     </div>
