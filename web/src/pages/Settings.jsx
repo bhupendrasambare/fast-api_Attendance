@@ -54,17 +54,23 @@ const [sessionId, setSessionId] = useState("");
 
 
     useEffect(() => {
-    fetch(BASE_URL+"/sections/", {
-        headers: {
-        accept: "application/json",
-        },
-    })
-        .then((res) => res.json())
-        .then((data) => {
-        setSections(data);
+        var url = "";
+        if (!classroomId){
+            url = BASE_URL+`/sections/`
+        }else{
+            url = BASE_URL+`/sections/?classroom_id=${classroomId}`;
+        }
+        fetch(url, {
+            headers: {
+            accept: "application/json",
+            },
+        })
+            .then((res) => res.json())
+            .then((data) => {
+            setSections(data);
         })
         .catch((err) => console.error("Error fetching sections:", err));
-    }, []);
+    }, [classroomId]);
 
 
   return (
@@ -94,7 +100,7 @@ const [sessionId, setSessionId] = useState("");
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
-                                <th>Sr no.</th>
+                                <th>#</th>
                                 <th>Session</th>
                                 <th>Session status</th>
                                 <th>Class name</th>
@@ -102,9 +108,8 @@ const [sessionId, setSessionId] = useState("");
                             </thead>
                             <tbody>
                                 {classrooms.map((classroom) => (
-
                                     <tr>
-                                        <td><input type="radio" name="" id="" /></td>
+                                        <td><input type="radio" name="" id="" onClick={()=>setClassroomId(classroom._id)} /></td>
                                         <td>{classroom?.session?.start_year} - {classroom?.session?.end_year}</td>
                                         <td>Active</td>
                                         <td>{classroom?.classroom_name}</td>
@@ -120,21 +125,21 @@ const [sessionId, setSessionId] = useState("");
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
-                                <th>Session</th>
-                                <th>Session status</th>
-                                <th>Class name</th>
-                                <th>Section name</th>
+                                    <th>#</th>
+                                    <th>Section name</th>
+                                    <th>Class name</th>
+                                    <th>Session</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {sections.map((section) => (
 
                                     <tr>
+                                        <td><input type="radio" name="section-radio" id="" onClick={()=>setSectionId(section._id)} /></td>
                                         <td>{section.section_name}</td>
+                                        <td>{section.class_room?.classroom_name}</td>
                                         <td>{section?.class_room?.session?.start_year}
                                              - {section?.class_room?.session?.end_year}</td>
-                                        <td>Active</td>
-                                        <td>{section.class_room?.classroom_name}</td>
                                     </tr>
                                 ))}
                                 

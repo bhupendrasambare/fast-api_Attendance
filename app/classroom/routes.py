@@ -145,8 +145,15 @@ async def create_section(section: CreateSection):
 
 
 @section_router.get("/", response_model=List[dict])
-async def get_sections():
-    sections = await sections_collection.find().to_list(100)
+async def get_sections(classroom_id: Optional[str] = Query(None)):
+    query = {}
+
+    if classroom_id:
+        if not ObjectId.is_valid(classroom_id):
+            raise HTTPException(status_code=400, detail="Invalid classroom_id")
+        query["class_room"] = classroom_id
+
+    sections = await sections_collection.find(query).to_list(100)
     results = []
     for s in sections:
         s["_id"] = str(s["_id"])
