@@ -1,61 +1,126 @@
-import { useEffect, useState } from "react";
-import api from "../services/api";
+import React, { useEffect, useState } from "react";
 import NavigationBar from "../components/Navbar";
+import { BASE_URL } from "../services/urls";
+import ClassroomTable from "../components/ClassroomTable";
+import SectionTable from "../components/SectionTable";
+import SessionModal from "../modals/SessionModal";
+import ClassroomModal from "../modals/ClassroomModal";
 
 const Dashboard = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+    const [sessionId, setSessionId] = useState("");
+    const [classroomId, setClassroomId] = useState("");
+    const [sectionId, setSectionId] = useState("");
 
-  useEffect(() => {
-    api.get("/students")
-      .then((res) => setData(res.data))
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
+    const [sessions, setSessions] = useState([]);
+    const [classrooms, setClassrooms] = useState([]);
+    const [sections, setSections] = useState([]);
 
-  return (
-    <>
+    const [showSessionModal, setShowSessionModal] = useState(false); 
+    const [showClassroomModal, setShowClassroomModal] = useState(false); 
+    const [showSectionModal, setShowSectionModal] = useState(false); 
+
+
+    const fetchSessions = () => {
+        fetch(BASE_URL + "/sessions/", { headers: { accept: "application/json" } })
+            .then((res) => res.json())
+            .then((data) => {
+                setSessions(data);
+                if(data.length>0){
+                    setSessionId(data[0]?._id)
+                }
+            })
+            .catch((err) => console.error("Error fetching sessions:", err));
+    };
+
+    const fetchClassroom = () =>{
+        const url = sessionId
+        ? BASE_URL + `/classrooms/?session_id=${sessionId}`
+        : BASE_URL + `/classrooms/`;
+
+        fetch(url, { headers: { accept: "application/json" } })
+            .then((res) => res.json())
+            .then((data) => setClassrooms(Array.isArray(data) ? data : []))
+            .catch((err) => console.error("Error fetching classrooms:", err));
+    }
+
+    // Fetch sessions on load
+    useEffect(() => {
+        fetchSessions();
+    }, []);
+
+    // Fetch classrooms
+    useEffect(() => {
+        fetchClassroom();
+    }, [sessionId]);
+
+    useEffect(() => {
+        if ((sessionId!="" || classroomId!="") && classrooms.length <=0){
+            setSections([])
+            return
+        }
+        const url = classroomId
+        ? BASE_URL + `/sections/?classroom_id=${classroomId}`
+        : BASE_URL + `/sections/`;
+
+        fetch(url, { headers: { accept: "application/json" } })
+            .then((res) => res.json())
+            .then((data) => setSections(Array.isArray(data) ? data : []))
+            .catch((err) => console.error("Error fetching sections:", err));
+    }, [classroomId, classrooms]);
+
+    return (
         <NavigationBar>
-            <div className="card p-3 rounded-lg">
-                <p className="fw-bold fs-4">Sessions</p>
-                <div className="d-flex flex-wrap justify-content-around w-100">
-                    <div  class="card text-white mb-3 dashboard_card dark_bg_1 shadow-lg" >
-                        <div class="card-body">
-                            <div className="d-flex justify-content-between w-100">
-                                <div className="fs-5">2024-2025</div>
-                                <div className="fw-bold fs-5">2000</div>
-                            </div>
-                        </div>
+            <div className="w-100 ps-2">
+                {/* Session Buttons */}
+                <div className="d-flex justify-content-between my-3">
+                    <div className="session-section">
+                    {sessions.map((session) => (
+                        <button
+                            key={session._id}
+                            onClick={() => setSessionId(session._id)}
+                            className={
+                            "btn shadow-lg rounded-pill mx-2 " +
+                            (sessionId === session._id ? "btn-success" : "btn-light")
+                            }
+                        >
+                        {session.start_year} - {session.end_year}
+                        </button>
+                    ))}
                     </div>
-                    <div  class="card text-white mb-3 dashboard_card dark_bg_2 shadow-lg" >
-                        <div class="card-body">
-                            <div className="d-flex justify-content-between w-100">
-                                <div className="fs-5">2023-2024</div>
-                                <div className="fw-bold fs-5">1917</div>
-                            </div>
-                        </div>
+                    <div className="add-sessions">
+                        <button className="btn btn-primary shadow-lg rounded-pill mx-2" onClick={() => setShowSessionModal(true)}>
+                            Add Session
+                        </button>
                     </div>
-                    <div  class="card text-white mb-3 dashboard_card dark_bg_3 shadow-lg" >
-                        <div class="card-body">
-                            <div className="d-flex justify-content-between w-100">
-                                <div className="fs-5">2022-2023</div>
-                                <div className="fw-bold fs-5">1687</div>
-                            </div>
-                        </div>
+                </div>
+
+                {/* Tables */}
+                <div className="row d-flex flex-wrap justify-content-center">
+                    <div className="col-sm-6">
+                        <ClassroomTable
+                            classrooms={classrooms}
+                            setClassroomId={setClassroomId}
+                            onAdd={() => setShowClassroomModal(true)}
+                        />
                     </div>
-                    <div  class="card text-white mb-3 dashboard_card dark_bg_4 shadow-lg" >
-                        <div class="card-body">
-                            <div className="d-flex justify-content-between w-100">
-                                <div className="fs-5">2021-2022</div>
-                                <div className="fw-bold fs-5">1587</div>
-                            </div>
-                        </div>
+                    <div className="col-sm-6">
+                        <SectionTable sections={sections} setSectionId={setSectionId} />
                     </div>
                 </div>
             </div>
+            {/* Modal */}
+            <SessionModal
+                show={showSessionModal}
+                handleClose={() => setShowSessionModal(false)}
+                refreshSessions={fetchSessions}
+            />
+            <ClassroomModal
+                show={showClassroomModal}
+                handleClose={() => setShowClassroomModal(false)}
+                refreshClassrooms={fetchClassroom}
+            />
         </NavigationBar>
-    </>
-  );
-}
+    );
+};
 
-export default Dashboard
+export default Dashboard;

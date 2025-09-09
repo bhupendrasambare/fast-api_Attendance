@@ -1,12 +1,8 @@
 import { useState } from "react";
-import { Navbar, Container, Nav, Button } from "react-bootstrap";
+import { Navbar, Container, Nav } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaHome, FaUserFriends } from "react-icons/fa";
-import { IoSettings } from "react-icons/io5";
 import { Link } from 'react-router-dom';
 import useAuthStore from "../store/authStore";
-import { FaRegUserCircle } from "react-icons/fa";
-import { IoMdExit } from "react-icons/io";
 
 const NavigationBar = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
@@ -33,9 +29,6 @@ const NavigationBar = ({ children }) => {
                    </Link>
                    <Link to="/students" style={{ color: "#fff" }} className="my-2 mx-2 text-decoration-none">
                      {/* <FaUserFriends size={26} className="me-2"/> */}Students
-                   </Link>
-                   <Link to="/settings" style={{ color: "#fff" }} className="my-2 mx-2 text-decoration-none">
-                     {/* <IoSettings size={26} className="me-2"/> */}Settings
                    </Link>
                    <div onClick={()=>logout()} style={{ color: "#fff" }} className="my-2 mx-2 text-decoration-none">
                      {/* <IoSettings size={26} className="me-2"/> */}Logout

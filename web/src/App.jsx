@@ -9,7 +9,6 @@ import Dashboard from './pages/Dashboard';
 import Students from './pages/Students';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ToastContainer, Zoom } from 'react-toastify';
-import Settings from "./pages/Settings";
 
 function App() {
   return (
@@ -56,16 +55,6 @@ function App() {
           element={
             <ProtectedRoute>
               <Students />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Protect Dashboard */}
-        <Route
-          path="/settings"
-          element={
-            <ProtectedRoute>
-              <Settings />
             </ProtectedRoute>
           }
         />
