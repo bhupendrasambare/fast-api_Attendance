@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
 from app.auth.auth import get_current_user
-from app.database import students_collection
+from app.database import students_collection, sessions_collection, classrooms_collection, sections_collection
 from app.students.modules import StudentCreate, StudentUpdate
 from bson import ObjectId
 from pathlib import Path
@@ -34,6 +34,16 @@ async def create_student(firstname: str = Form(...), middlename: str = Form(...)
         "image_name": str(file_path),
         "created_by": str(user)
     }
+    try:
+        sessionData = await sessions_collection.find_one({"_id":ObjectId(session)})
+        classroomData = await classrooms_collection.find_one({"_id":ObjectId(student_class)})
+        sectionData = await sections_collection.find_one({"_id":ObjectId(section)})
+
+        if not sessionData or classroomData or sectionData:
+            raise HTTPException(detail="Invalid id", status_code=404)
+    except:
+        raise HTTPException(detail="Invalid id", status_code=404)
+
 
     result = await students_collection.insert_one(student_dict)
     return {"id":str(result.inserted_id), "message":"Student created"}
@@ -49,7 +59,7 @@ async def update_student(student_id:str, student:StudentUpdate, user :dict = Dep
     restult = await students_collection.update_one({"_id":ObjectId(student_id)}, {"$set": updates})
     if restult.modified_count == 0:
         raise HTTPException(status_code=404, detail="Student not found")
-    return {message:"Student updated"}
+    return {"message":"Student updated"}
 
 @router.delete("/delete/{student_id}")
 async def delete_student(student_id:str, user: dict= Depends(get_current_user)):
