@@ -39,8 +39,33 @@ const Dashboard = () => {
 
         fetch(url, { headers: { accept: "application/json" } })
             .then((res) => res.json())
-            .then((data) => setClassrooms(Array.isArray(data) ? data : []))
+            .then((data) => {
+                if(data.length>0){
+                    setClassroomId(data[0]?._id)
+                }
+                setClassrooms(Array.isArray(data) ? data : [])
+            })
             .catch((err) => console.error("Error fetching classrooms:", err));
+    }
+
+    const fetchSections = () =>{
+         if ((sessionId!="" || classroomId!="") && classrooms.length <=0){
+            setSections([])
+            return
+        }
+        const url = classroomId
+        ? BASE_URL + `/sections/?classroom_id=${classroomId}`
+        : BASE_URL + `/sections/`;
+
+        fetch(url, { headers: { accept: "application/json" } })
+            .then((res) => res.json())
+            .then((data) => {
+                if(data.length>0){
+                    setSectionId(data[0]?._id)
+                }
+                setSections(Array.isArray(data) ? data : [])
+            })
+            .catch((err) => console.error("Error fetching sections:", err));
     }
 
     // Fetch sessions on load
@@ -54,18 +79,7 @@ const Dashboard = () => {
     }, [sessionId]);
 
     useEffect(() => {
-        if ((sessionId!="" || classroomId!="") && classrooms.length <=0){
-            setSections([])
-            return
-        }
-        const url = classroomId
-        ? BASE_URL + `/sections/?classroom_id=${classroomId}`
-        : BASE_URL + `/sections/`;
-
-        fetch(url, { headers: { accept: "application/json" } })
-            .then((res) => res.json())
-            .then((data) => setSections(Array.isArray(data) ? data : []))
-            .catch((err) => console.error("Error fetching sections:", err));
+       fetchSections()
     }, [classroomId, classrooms]);
 
     return (
@@ -98,13 +112,18 @@ const Dashboard = () => {
                 <div className="row d-flex flex-wrap justify-content-center">
                     <div className="col-sm-6">
                         <ClassroomTable
+                            classroomId={classroomId}
                             classrooms={classrooms}
                             setClassroomId={setClassroomId}
                             onAdd={() => setShowClassroomModal(true)}
                         />
                     </div>
                     <div className="col-sm-6">
-                        <SectionTable sections={sections} setSectionId={setSectionId} />
+                        <SectionTable
+                            sectionId={sectionId}
+                            sections={sections}
+                            setSectionId={setSectionId}
+                        />
                     </div>
                 </div>
             </div>

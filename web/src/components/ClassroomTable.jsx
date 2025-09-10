@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Button } from "react-bootstrap";
 
-const ClassroomTable = ({ classrooms, setClassroomId, onAdd }) => {
+const ClassroomTable = ({ classrooms, setClassroomId, onAdd, classroomId }) => {
   return (
     <div className="shadow-lg py-3 px-1 mx-1 rounded">
       <div className="d-flex justify-content-between align-items-center mb-2">
@@ -29,7 +29,9 @@ const ClassroomTable = ({ classrooms, setClassroomId, onAdd }) => {
             <tr key={classroom._id}>
               <td>
                 <input
+                  checked={(classroomId == classroom?._id)?"checked":""}
                   type="radio"
+                  name="classroom-radio"
                   onClick={() => setClassroomId(classroom._id)}
                 />
               </td>

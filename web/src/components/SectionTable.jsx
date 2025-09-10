@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Table } from "react-bootstrap";
 
-const SectionTable = ({ sections, setSectionId }) => {
+const SectionTable = ({ sections, setSectionId, sectionId }) => {
   const [page, setPage] = useState(1);
   const perPage = 5;
   const totalPages = Math.ceil(sections.length / perPage);
@@ -25,6 +25,7 @@ const SectionTable = ({ sections, setSectionId }) => {
             <tr key={section._id}>
               <td>
                 <input
+                  checked={(sectionId == section?._id)?"checked":""}
                   type="radio"
                   name="section-radio"
                   onClick={() => setSectionId(section._id)}
