@@ -3,28 +3,58 @@ import { Button, Form, Image, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { ADD_STUDENT } from '../services/urls';
 import api from '../services/api';
+import { fetchClassroom, fetchSections, fetchSessions } from '../services/apiresponse';
 
 function AddStudentForm(props) {
 
     const [firstname,setFirstName] = useState("");
     const [middlename,setMiddleName] = useState("");
     const [lastname,setLastName] = useState("");
-    const [student_class,setStudentClass] = useState("");
-    const [section,setSection] = useState("");
     const [selectedImage, setSelectedImage] = useState(null);
     const [preview, setPreview] = useState(null);
 
-    const currentYear = new Date().getFullYear();
-    const years = Array.from({ length: 41 }, (_, i) => currentYear - 20 + i);
+    const [sessionId, setSessionId] = useState("");
+    const [classroomId, setClassroomId] = useState("");
+    const [sectionId, setSectionId] = useState("");
 
-    const [startYear, setStartYear] = useState(currentYear);
-    const [endYear, setEndYear] = useState(currentYear);
+    const [sessions, setSessions] = useState([]);
+    const [classrooms, setClassrooms] = useState([]);
+    const [sections, setSections] = useState([]);
 
     useEffect(() => {
-        if (endYear < startYear) {
-        setEndYear(startYear);
+        const loadSessions = async () => {
+            const data = await fetchSessions();
+            setSessions(data);
+            if (data.length > 0) {
+                setSessionId(data[0]?._id);
+            }
+        };
+        loadSessions();
+    }, []);
+
+    // Fetch classrooms when sessionId changes
+    useEffect(() => {
+    const loadClassrooms = async () => {
+        const data = await fetchClassroom(sessionId);
+        setClassrooms(Array.isArray(data) ? data : []);
+        if (data.length > 0) {
+            setClassroomId(data[0]?._id);
         }
-    }, [startYear]);
+    };
+    loadClassrooms();
+    }, [sessionId]);
+
+    // Fetch sections when classroomId (or classrooms list) changes
+    useEffect(() => {
+    const loadSections = async () => {
+        const data = await fetchSections(classroomId, sessionId);
+        setSections(Array.isArray(data) ? data : []);
+        if (data.length > 0) {
+            setSectionId(data[0]?._id);
+        }
+    };
+    loadSections();
+    }, [classroomId, classrooms, sessionId]);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -37,27 +67,25 @@ function AddStudentForm(props) {
             };
             reader.readAsDataURL(file);
         } else {
-        setPreview(null);
+            setPreview(null);
         }
     };
 
     const handelRegister = async (e) => {
         e.preventDefault();
 
-        if (!firstname || !lastname || !student_class || !section || !selectedImage) {
+        if (!firstname || !lastname || !classroomId || !sectionId || !selectedImage) {
             toast.error("Please fill all required fields and select an image.");
             return;
         }
-
-        const session = `${startYear}-${endYear}`;
 
         const formData = new FormData();
         formData.append("firstname", firstname);
         formData.append("middlename", middlename);
         formData.append("lastname", lastname);
-        formData.append("student_class", student_class);
-        formData.append("section", section);
-        formData.append("session", session);
+        formData.append("student_class", classroomId);
+        formData.append("section", sectionId);
+        formData.append("session", sessionId);
         formData.append("image", selectedImage);
 
         try {
@@ -111,46 +139,69 @@ function AddStudentForm(props) {
                 </div>
 
                 <div className="row">
+                {/* Last Name */}
                     <div className="col-sm-6">
                         <Form.Group className="mb-3" controlId="forLastName">
-                            <Form.Label>LastName</Form.Label>
-                            <Form.Control placeholder="Enter last name"  onChange={(e) => setLastName(e.target.value)} />
-                        </Form.Group>
-                    </div> 
-                    <div className="col-sm-6">
-                        <Form.Group className="mb-3" controlId="forClassName">
-                            <Form.Label>Class name</Form.Label>
-                            <Form.Control placeholder="Enter class name"  onChange={(e) => setStudentClass(e.target.value)} />
+                        <Form.Label>Last Name</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter last name"
+                            onChange={(e) => setLastName(e.target.value)}
+                        />
                         </Form.Group>
                     </div>
-                </div>
 
-                <div className="row">
+                    {/* Session Dropdown */}
+                    <div className="col-sm-6">
+                        <Form.Group className="mb-3" controlId="forSession">
+                        <Form.Label>Session</Form.Label>
+                        <Form.Select
+                            value={sessionId}
+                            onChange={(e) => setSessionId(e.target.value)}
+                        >
+                            <option value="">Select Session</option>
+                            {sessions.map((s) => (
+                            <option key={s._id} value={s._id}>
+                                {s.start_year} - {s.end_year}
+                            </option>
+                            ))}
+                        </Form.Select>
+                        </Form.Group>
+                    </div>
+
+                    {/* Classroom Dropdown */}
+                    <div className="col-sm-6">
+                        <Form.Group className="mb-3" controlId="forClassroom">
+                        <Form.Label>Classroom</Form.Label>
+                        <Form.Select
+                            value={classroomId}
+                            onChange={(e) => setClassroomId(e.target.value)}
+                        >
+                            <option value="">Select Classroom</option>
+                            {classrooms.map((c) => (
+                            <option key={c._id} value={c._id}>
+                                {c.classroom_name}
+                            </option>
+                            ))}
+                        </Form.Select>
+                        </Form.Group>
+                    </div>
+
+                    {/* Section Dropdown */}
                     <div className="col-sm-6">
                         <Form.Group className="mb-3" controlId="forSection">
-                            <Form.Label>Section</Form.Label>
-                            <Form.Control placeholder="Enter last name"  onChange={(e) => setSection(e.target.value)} />
-                        </Form.Group>
-                    </div> 
-                    <div className="col-sm-6 d-flex gap-3">
-                        <Form.Group controlId="startYear">
-                            <Form.Label>Start Year</Form.Label>
-                            <Form.Select value={startYear} onChange={(e) => setStartYear(parseInt(e.target.value))}>
-                            {years.map((year) => (
-                                <option key={year} value={year}>{year}</option>
+                        <Form.Label>Section</Form.Label>
+                        <Form.Select
+                            value={sectionId}
+                            onChange={(e) => setSectionId(e.target.value)}
+                        >
+                            <option value="">Select Section</option>
+                            {sections.map((sec) => (
+                            <option key={sec._id} value={sec._id}>
+                                {sec.section_name}
+                            </option>
                             ))}
-                            </Form.Select>
-                        </Form.Group>
-
-                        <Form.Group controlId="endYear">
-                            <Form.Label>End Year</Form.Label>
-                            <Form.Select value={endYear} onChange={(e) => setEndYear(parseInt(e.target.value))}>
-                            {years
-                                .filter((year) => year >= startYear)
-                                .map((year) => (
-                                <option key={year} value={year}>{year}</option>
-                                ))}
-                            </Form.Select>
+                        </Form.Select>
                         </Form.Group>
                     </div>
                 </div>
@@ -170,7 +221,7 @@ function AddStudentForm(props) {
                 Close
             </Button>
             <Button variant="primary" onClick={handelRegister}>
-                Save Changes
+                Add Student
             </Button>
         </Modal.Footer>
     </Modal>

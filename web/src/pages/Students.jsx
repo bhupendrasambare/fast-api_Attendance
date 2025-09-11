@@ -1,11 +1,11 @@
 import NavigationBar from '../components/Navbar'
 import { BiPlusCircle } from "react-icons/bi";
 import { useEffect, useState } from 'react';
-import AddStudentForm from './AddStudentForm';
+import AddStudentForm from '../modals/AddStudentForm';
 import api from '../services/api';
-import { BASE_URL, GET_STUDENTS } from '../services/urls';
-import { Button, Card } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import CheckAttendanceForm from './CheckAttendanceForm';
+import { GET_STUDENTS } from '../services/urls';
 
 function Students() {
     const [addStudentModal, setAddStudentModal] = useState(false);
@@ -20,7 +20,7 @@ function Students() {
         try {
             const response = await api.get(GET_STUDENTS);
             if (response.data) {
-                setStudents(response.data);
+                setStudents(response.data.data);
             }
         } catch (err) {
             console.error("Failed to fetch students:", err);
@@ -56,9 +56,9 @@ function Students() {
                         <Card.Body>
                             <Card.Title>{student.firstname} {student.lastname}</Card.Title>
                             <Card.Text>
-                            Class: {student.student_class}, Section: {student.section}
+                            Class: {student.student_class?.name}, Section: {student.section?.name}
                             <br/>
-                            Session: {student.session}
+                            Session: {student.session?.name}
                             </Card.Text>
                         </Card.Body>
                         </Card>

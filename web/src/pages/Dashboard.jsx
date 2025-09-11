@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import NavigationBar from "../components/Navbar";
-import { BASE_URL } from "../services/urls";
 import ClassroomTable from "../components/ClassroomTable";
 import SectionTable from "../components/SectionTable";
 import SessionModal from "../modals/SessionModal";
 import ClassroomModal from "../modals/ClassroomModal";
+import { fetchClassroom, fetchSections, fetchSessions } from "../services/apiresponse";
 
 const Dashboard = () => {
     const [sessionId, setSessionId] = useState("");
@@ -19,68 +19,38 @@ const Dashboard = () => {
     const [showClassroomModal, setShowClassroomModal] = useState(false); 
     const [showSectionModal, setShowSectionModal] = useState(false); 
 
-
-    const fetchSessions = () => {
-        fetch(BASE_URL + "/sessions/", { headers: { accept: "application/json" } })
-            .then((res) => res.json())
-            .then((data) => {
-                setSessions(data);
-                if(data.length>0){
-                    setSessionId(data[0]?._id)
-                }
-            })
-            .catch((err) => console.error("Error fetching sessions:", err));
-    };
-
-    const fetchClassroom = () =>{
-        const url = sessionId
-        ? BASE_URL + `/classrooms/?session_id=${sessionId}`
-        : BASE_URL + `/classrooms/`;
-
-        fetch(url, { headers: { accept: "application/json" } })
-            .then((res) => res.json())
-            .then((data) => {
-                if(data.length>0){
-                    setClassroomId(data[0]?._id)
-                }
-                setClassrooms(Array.isArray(data) ? data : [])
-            })
-            .catch((err) => console.error("Error fetching classrooms:", err));
-    }
-
-    const fetchSections = () =>{
-         if ((sessionId!="" || classroomId!="") && classrooms.length <=0){
-            setSections([])
-            return
-        }
-        const url = classroomId
-        ? BASE_URL + `/sections/?classroom_id=${classroomId}`
-        : BASE_URL + `/sections/`;
-
-        fetch(url, { headers: { accept: "application/json" } })
-            .then((res) => res.json())
-            .then((data) => {
-                if(data.length>0){
-                    setSectionId(data[0]?._id)
-                }
-                setSections(Array.isArray(data) ? data : [])
-            })
-            .catch((err) => console.error("Error fetching sections:", err));
-    }
-
-    // Fetch sessions on load
     useEffect(() => {
-        fetchSessions();
+        const loadSessions = async () => {
+            const data = await fetchSessions();
+            setSessions(data);
+            if (data.length > 0) {
+                setSessionId(data[0]?._id);
+            }
+        };
+        loadSessions();
     }, []);
 
-    // Fetch classrooms
     useEffect(() => {
-        fetchClassroom();
+    const loadClassrooms = async () => {
+        const data = await fetchClassroom(sessionId);
+        setClassrooms(Array.isArray(data) ? data : []);
+        if (data.length > 0) {
+            setClassroomId(data[0]?._id);
+        }
+    };
+    loadClassrooms();
     }, [sessionId]);
 
     useEffect(() => {
-       fetchSections()
-    }, [classroomId, classrooms]);
+    const loadSections = async () => {
+        const data = await fetchSections(classroomId, sessionId);
+        setSections(Array.isArray(data) ? data : []);
+        if (data.length > 0) {
+            setSectionId(data[0]?._id);
+        }
+    };
+    loadSections();
+    }, [classroomId, classrooms, sessionId]);
 
     return (
         <NavigationBar>
