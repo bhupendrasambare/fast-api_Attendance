@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Table } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 
-const SectionTable = ({ sections, setSectionId, sectionId }) => {
+const SectionTable = ({ sections, setSectionId, onAdd, sectionId }) => {
   const [page, setPage] = useState(1);
   const perPage = 5;
   const totalPages = Math.ceil(sections.length / perPage);
@@ -10,7 +10,16 @@ const SectionTable = ({ sections, setSectionId, sectionId }) => {
 
   return (
     <div className="shadow-lg py-3 px-1 mx-1 rounded">
-      <h5 className="fw-bold m-2">Sections</h5>
+      <div className="d-flex justify-content-between align-items-center mb-2">
+        <h5 className="fw-bold m-2">Sections</h5>
+        <Button
+          variant="primary"
+          className="shadow-sm rounded-pill btn-sm mx-3"
+          onClick={onAdd}
+        >
+          Add Section
+        </Button>
+      </div>
       <Table striped bordered hover>
         <thead>
           <tr>

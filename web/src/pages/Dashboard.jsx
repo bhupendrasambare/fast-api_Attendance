@@ -5,6 +5,7 @@ import SectionTable from "../components/SectionTable";
 import SessionModal from "../modals/SessionModal";
 import ClassroomModal from "../modals/ClassroomModal";
 import { fetchClassroom, fetchSections, fetchSessions } from "../services/apiresponse";
+import SectionModal from "../modals/SectionModal";
 
 const Dashboard = () => {
     const [sessionId, setSessionId] = useState("");
@@ -28,7 +29,7 @@ const Dashboard = () => {
             }
         };
         loadSessions();
-    }, []);
+    }, [showSessionModal]);
 
     useEffect(() => {
     const loadClassrooms = async () => {
@@ -39,7 +40,7 @@ const Dashboard = () => {
         }
     };
     loadClassrooms();
-    }, [sessionId]);
+    }, [sessionId, showClassroomModal]);
 
     useEffect(() => {
     const loadSections = async () => {
@@ -50,7 +51,7 @@ const Dashboard = () => {
         }
     };
     loadSections();
-    }, [classroomId, classrooms, sessionId]);
+    }, [classroomId, classrooms, showSectionModal]);
 
     return (
         <NavigationBar>
@@ -93,6 +94,7 @@ const Dashboard = () => {
                             sectionId={sectionId}
                             sections={sections}
                             setSectionId={setSectionId}
+                            onAdd={() => setShowSectionModal(true)}
                         />
                     </div>
                 </div>
@@ -107,6 +109,11 @@ const Dashboard = () => {
                 show={showClassroomModal}
                 handleClose={() => setShowClassroomModal(false)}
                 refreshClassrooms={fetchClassroom}
+            />
+            <SectionModal
+                show={showSectionModal}
+                handleClose={() => setShowSectionModal(false)}
+                refreshClassrooms={fetchSections}
             />
         </NavigationBar>
     );

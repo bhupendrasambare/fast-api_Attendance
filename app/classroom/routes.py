@@ -116,8 +116,6 @@ async def create_section(section: CreateSection):
     
     if not ObjectId.is_valid(section.class_room):
         raise HTTPException(status_code=400, detail="Invalid class_room id")
-    if not ObjectId.is_valid(section.session):
-        raise HTTPException(status_code=400, detail="Invalid session id")
 
     classroom = await classrooms_collection.find_one({"_id": ObjectId(section.class_room)})
     if not classroom:
@@ -126,7 +124,6 @@ async def create_section(section: CreateSection):
 
     duplicate = await sections_collection.find_one({
         "class_room": section.class_room,
-        "session": section.session,
         "section_name": section.section_name
     })
     if duplicate:
@@ -135,13 +132,7 @@ async def create_section(section: CreateSection):
     data = section.dict()
     result = await sections_collection.insert_one(data)
 
-    classroom["_id"] = str(classroom["_id"])
-    session = await sessions_collection.find_one({"_id": ObjectId(classroom["session"])})
-    if session:
-        session["_id"] = str(session["_id"])
-        classroom["session"] = session
-
-    return {"id": str(result.inserted_id), "class_room": classroom}
+    return {"id": str(result.inserted_id), "message": "Section created successfully"}
 
 
 @section_router.get("/", response_model=List[dict])

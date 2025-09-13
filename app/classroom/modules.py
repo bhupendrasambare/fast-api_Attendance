@@ -21,4 +21,3 @@ class CreateClassRoom(BaseModel):
 class CreateSection(BaseModel):
     class_room: str
     section_name: str
-    session: str
