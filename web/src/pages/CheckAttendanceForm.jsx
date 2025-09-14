@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import { Button, Card, Form, Image, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { ADD_STUDENT, CHECK_ATTENDANCE } from '../services/urls';

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import NavigationBar from "../components/Navbar";
 import ClassroomTable from "../components/ClassroomTable";
 import SectionTable from "../components/SectionTable";
@@ -6,11 +6,13 @@ import SessionModal from "../modals/SessionModal";
 import ClassroomModal from "../modals/ClassroomModal";
 import { fetchClassroom, fetchSections, fetchSessions } from "../services/apiresponse";
 import SectionModal from "../modals/SectionModal";
+import StudentDataTable from "../components/StudentsTable";
 
 const Dashboard = () => {
     const [sessionId, setSessionId] = useState("");
     const [classroomId, setClassroomId] = useState("");
     const [sectionId, setSectionId] = useState("");
+    const [studentId, setStudentId] = useState("");
 
     const [sessions, setSessions] = useState([]);
     const [classrooms, setClassrooms] = useState([]);
@@ -81,7 +83,7 @@ const Dashboard = () => {
 
                 {/* Tables */}
                 <div className="row d-flex flex-wrap justify-content-center">
-                    <div className="col-sm-6">
+                    <div className="col-lg-6 my-3">
                         <ClassroomTable
                             classroomId={classroomId}
                             classrooms={classrooms}
@@ -89,11 +91,18 @@ const Dashboard = () => {
                             onAdd={() => setShowClassroomModal(true)}
                         />
                     </div>
-                    <div className="col-sm-6">
+                    <div className="col-lg-6 my-3">
                         <SectionTable
                             sectionId={sectionId}
                             sections={sections}
                             setSectionId={setSectionId}
+                            onAdd={() => setShowSectionModal(true)}
+                        />
+                    </div>
+                    <div className="col-lg-12 my-3">
+                        <StudentDataTable
+                            studentId={studentId}
+                            setStudentId={setStudentId}
                             onAdd={() => setShowSectionModal(true)}
                         />
                     </div>
