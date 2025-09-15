@@ -26,7 +26,7 @@ const StudentDataTable = ({ setStudentId, onAdd, studentId }) => {
             setStudents(data.data || []);
             setFiltered(data.data || []);
         } catch (err) {
-            console.error("Error fetching students:", err);
+            console.error("Error fetching students :", err);
         } finally {
             setLoading(false);
         }
