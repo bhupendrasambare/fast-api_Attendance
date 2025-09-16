@@ -1,39 +1,31 @@
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { Button } from "react-bootstrap";
+import api from "../services/api";
 
 const StudentDataTable = ({ setStudentId, onAdd, studentId }) => {
   const [students, setStudents] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // TODO: Replace this with your actual JWT token (or get from Redux/Context)
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODgxMGQ4MmY4YjM2OTcwOGJjOTM0ZDkiLCJleHAiOjE3NTc4NTE0NzF9.K0Lx4smdy_CmswZCXwaF6tAXur854q-Udc06q5GQR24";
-
-    useEffect(() => {
+  useEffect(() => {
     const fetchStudents = async () => {
-        try {
-            const res = await fetch("http://localhost:8000/api/v1/students/get", {
-            headers: {
-                Accept: "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            });
-            const data = await res.json();
-            console.log("Full API response:", data);
-            console.log("First student:", data.data?.[0]); // 👈 check structure here
-            setStudents(data.data || []);
-            setFiltered(data.data || []);
-        } catch (err) {
-            console.error("Error fetching students :", err);
-        } finally {
-            setLoading(false);
-        }
+      try {
+        const res = await api.get("/students/get"); // 👈 no need to add baseURL or token
+        console.log("Full API response:", res.data);
+        console.log("First student:", res.data.data?.[0]);
+
+        setStudents(res.data.data || []);
+        setFiltered(res.data.data || []);
+      } catch (err) {
+        console.error("Error fetching students:", err);
+      } finally {
+        setLoading(false);
+      }
     };
 
-  fetchStudents();
-}, []);
+    fetchStudents();
+  }, []);
 
 const columns = [
   {
