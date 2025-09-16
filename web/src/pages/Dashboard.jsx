@@ -7,6 +7,7 @@ import ClassroomModal from "../modals/ClassroomModal";
 import { fetchClassroom, fetchSections, fetchSessions } from "../services/apiresponse";
 import SectionModal from "../modals/SectionModal";
 import StudentDataTable from "../components/StudentsTable";
+import AddStudentForm from "../modals/AddStudentForm";
 
 const Dashboard = () => {
     const [sessionId, setSessionId] = useState("");
@@ -21,6 +22,7 @@ const Dashboard = () => {
     const [showSessionModal, setShowSessionModal] = useState(false); 
     const [showClassroomModal, setShowClassroomModal] = useState(false); 
     const [showSectionModal, setShowSectionModal] = useState(false); 
+    const [addStudentModal, setAddStudentModal] = useState(false);
 
     useEffect(() => {
         const loadSessions = async () => {
@@ -103,7 +105,7 @@ const Dashboard = () => {
                         <StudentDataTable
                             studentId={studentId}
                             setStudentId={setStudentId}
-                            onAdd={() => setShowSectionModal(true)}
+                            onAdd={() => setAddStudentModal(true)}
                         />
                     </div>
                 </div>
@@ -123,6 +125,10 @@ const Dashboard = () => {
                 show={showSectionModal}
                 handleClose={() => setShowSectionModal(false)}
                 refreshClassrooms={fetchSections}
+            />
+            <AddStudentForm
+                show={addStudentModal}
+                onHide={() => setAddStudentModal(false)}
             />
         </NavigationBar>
     );

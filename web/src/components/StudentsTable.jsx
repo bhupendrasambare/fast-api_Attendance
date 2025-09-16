@@ -29,21 +29,17 @@ const StudentDataTable = ({ setStudentId, onAdd, studentId }) => {
 
 const columns = [
   {
-    name: "#",
-    selector: (row) => (
-      <input
-        checked={studentId === row._id}
-        type="radio"
-        name="student-radio"
-        onChange={() => setStudentId(row._id)}
-      />
-    ),
-    width: "70px",
-  },
-  {
     name: "Full Name",
     selector: (row) =>
       `${row.firstname || ""} ${row.middlename || ""} ${row.lastname || ""}`,
+    sortable: true,
+  },
+  {
+    name: "Section",
+    selector: (row) =>
+      row.section?.name ||
+      row.section?.section_name ||
+      "(Not Set)",
     sortable: true,
   },
   {
@@ -52,14 +48,6 @@ const columns = [
     row.student_class?.name ||
     row.student_class?.classroom_name ||
     row.student_class?.class_name ||
-    "(Not Set)",
-  sortable: true,
-},
-{
-  name: "Section",
-  selector: (row) =>
-    row.section?.name ||
-    row.section?.section_name ||
     "(Not Set)",
   sortable: true,
 },

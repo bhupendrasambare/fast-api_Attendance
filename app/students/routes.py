@@ -83,9 +83,9 @@ async def get_students(
         classroomData = await classrooms_collection.find_one({"_id": ObjectId(s["student_class"])})
         sectionData = await sections_collection.find_one({"_id": ObjectId(s["section"])})
 
-        s["session"] = {"_id": str(sessionData["_id"]), "name": sessionData.get("name")} if sessionData else None
-        s["student_class"] = {"_id": str(classroomData["_id"]), "name": classroomData.get("name")} if classroomData else None
-        s["section"] = {"_id": str(sectionData["_id"]), "name": sectionData.get("name")} if sectionData else None
+        s["session"] = {"_id": str(sessionData["_id"]), "name": sessionData.get("start_year") + '-' + sessionData.get("end_year")} if sessionData else None
+        s["student_class"] = {"_id": str(classroomData["_id"]), "name": classroomData.get("classroom_name")} if classroomData else None
+        s["section"] = {"_id": str(sectionData["_id"]), "name": sectionData.get("section_name")} if sectionData else None
         enriched_students.append(s)
 
     return {
