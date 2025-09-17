@@ -93,9 +93,9 @@ function CheckAttendanceForm(props) {
                     <Card.Body>
                         <Card.Title>{student.firstname} {student.lastname}</Card.Title>
                         <Card.Text>
-                        Class: {student.student_class}, Section: {student.section}
+                        Class: {student.student_class.name}, Section: {student.section.name}
                         <br/>
-                        Session: {student.session}
+                        Session: {student.session.name}
                         </Card.Text>
                     </Card.Body>
                     </Card>

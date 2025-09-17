@@ -2,8 +2,9 @@ import face_recognition
 import os
 import uuid
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from app.database import students_collection
+from app.database import students_collection, sessions_collection, classrooms_collection, sections_collection
 from pathlib import Path
+from bson import ObjectId
 
 router = APIRouter(prefix="/attendance", tags=["3. Attendance"])
 
@@ -52,7 +53,19 @@ async def check_attendance_by_image(group_image: UploadFile = File(...)):
             except Exception:
                 continue
 
-        return matched_students
+        enriched_students = []
+        for s in matched_students:
+            s["_id"] = str(s["_id"])
+            sessionData = await sessions_collection.find_one({"_id": ObjectId(s["session"])})
+            classroomData = await classrooms_collection.find_one({"_id": ObjectId(s["student_class"])})
+            sectionData = await sections_collection.find_one({"_id": ObjectId(s["section"])})
+
+            s["session"] = {"_id": str(sessionData["_id"]), "name": sessionData.get("start_year") + '-' + sessionData.get("end_year")} if sessionData else None
+            s["student_class"] = {"_id": str(classroomData["_id"]), "name": classroomData.get("classroom_name")} if classroomData else None
+            s["section"] = {"_id": str(sectionData["_id"]), "name": sectionData.get("section_name")} if sectionData else None
+            enriched_students.append(s)
+
+        return enriched_students
 
     finally:
         if os.path.exists(temp_path):
