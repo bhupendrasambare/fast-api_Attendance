@@ -29,6 +29,17 @@ const StudentDataTable = ({ setStudentId, onAdd, studentId }) => {
 
 const columns = [
   {
+    name: "Photo",
+    selector: (row) =>
+      <>
+        <img 
+            className="m-3"
+            src={`http://localhost:8000/${row.image_name}`}
+            alt={`${row.firstname}'s image`}  width={100}/>
+      </>,
+    sortable: true,
+  },
+  {
     name: "Full Name",
     selector: (row) =>
       `${row.firstname || ""} ${row.middlename || ""} ${row.lastname || ""}`,
