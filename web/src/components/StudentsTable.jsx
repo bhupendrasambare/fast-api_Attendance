@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { Button } from "react-bootstrap";
 import api from "../services/api";
+import { BASE_LINK } from "../services/urls";
 
 const StudentDataTable = ({ setStudentId, onAdd, studentId }) => {
   const [students, setStudents] = useState([]);
@@ -34,7 +35,7 @@ const columns = [
       <>
         <img 
             className="m-3"
-            src={`http://localhost:8000/${row.image_name}`}
+            src={`${BASE_LINK}${row.image_name}`}
             alt={`${row.firstname}'s image`}  width={100}/>
       </>,
     sortable: true,
