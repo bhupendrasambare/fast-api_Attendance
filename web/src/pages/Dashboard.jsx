@@ -104,7 +104,9 @@ const Dashboard = () => {
                     <div className="col-lg-12 my-3">
                         <StudentDataTable
                             studentId={studentId}
-                            setStudentId={setStudentId}
+                            sectionId={sectionId}
+                            classroomId={classroomId}
+                            sessionId={sessionId}
                             onAdd={() => setAddStudentModal(true)}
                         />
                     </div>

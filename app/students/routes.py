@@ -4,6 +4,7 @@ from app.database import students_collection, sessions_collection, classrooms_co
 from app.students.modules import StudentCreate, StudentUpdate
 from bson import ObjectId
 from pathlib import Path
+from typing import Optional
 import shutil, os
 
 import dotenv
@@ -11,6 +12,12 @@ dotenv.load_dotenv()
 
 router = APIRouter(prefix="/students", tags=["2. Students"])
 BASE_UPLOAD_DIR = os.getenv("LOCAL_LOCATION")
+
+def safe_object_id(id_str: Optional[str]) -> Optional[ObjectId]:
+    """Convert to ObjectId if valid, else return None"""
+    if id_str and ObjectId.is_valid(id_str):
+        return ObjectId(id_str)
+    return None
 
 @router.post("/add")
 async def create_student(
@@ -64,13 +71,29 @@ async def create_student(
 async def get_students(
     page: int = Query(1, ge=1),
     size: int = Query(10, ge=1),
+    sectionId:str | None = Query(default=None, description="An optional sectionId string"),
+    classroomId:str | None = Query(default=None, description="An optional clasrromId string"),
+    sessionId:str | None = Query(default=None, description="An optional sessionId string"),
     user: dict = Depends(get_current_user)
 ):
     skip = (page - 1) * size
-    total = await students_collection.count_documents({})
+
+    section_oid = safe_object_id(sectionId)
+    classroom_oid = safe_object_id(classroomId)
+    session_oid = safe_object_id(sessionId)
+
+    query = {}
+    if section_oid:
+        query["section"] = section_oid
+    if classroom_oid:
+        query["student_class"] = classroom_oid
+    if session_oid:
+        query["session"] = session_oid
+
+    total = await students_collection.count_documents(query)
 
     students = (
-        await students_collection.find({})
+        await students_collection.find(query)
         .skip(skip)
         .limit(size)
         .to_list(length=size)

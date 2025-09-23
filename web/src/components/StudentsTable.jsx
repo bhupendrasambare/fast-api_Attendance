@@ -4,7 +4,7 @@ import { Button } from "react-bootstrap";
 import api from "../services/api";
 import { BASE_LINK } from "../services/urls";
 
-const StudentDataTable = ({ setStudentId, onAdd, studentId }) => {
+const StudentDataTable = ({ onAdd, studentId, sectionId, classroomId, sessionId }) => {
   const [students, setStudents] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,7 +12,7 @@ const StudentDataTable = ({ setStudentId, onAdd, studentId }) => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await api.get("/students/get"); // 👈 no need to add baseURL or token
+        const res = await api.get(`/students/get?sectionId=${sectionId}&classroomId=${classroomId}&sessionId=${sessionId}`); 
         console.log("Full API response:", res.data);
         console.log("First student:", res.data.data?.[0]);
 
@@ -26,7 +26,7 @@ const StudentDataTable = ({ setStudentId, onAdd, studentId }) => {
     };
 
     fetchStudents();
-  }, []);
+  }, [sectionId, classroomId, sessionId]);
 
 const columns = [
   {
