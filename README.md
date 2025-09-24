@@ -95,14 +95,8 @@ npm start
 
 ---
 
-## Sample API Endpoints
-
-| Method | Endpoint             | Description          |
-| ------ | -------------------- | -------------------- |
-| POST   | `/api/v1/login`      | Login user           |
-| GET    | `/api/v1/students`   | List all students    |
-| POST   | `/api/v1/attendance` | Upload attendance    |
-| GET    | `/upload/{filename}` | Serve uploaded image |
+## API Documentation
+${IP}:${PORT}/docs
 
 ---
 
