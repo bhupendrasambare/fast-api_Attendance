@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, Query
 from app.auth.auth import get_current_user
 from app.database import students_collection, sessions_collection, classrooms_collection, sections_collection
-from app.students.modules import StudentCreate, StudentUpdate
+from app.students.modules import StudentFilter, StudentUpdate
 from bson import ObjectId
 from pathlib import Path
 from typing import Optional
@@ -119,6 +119,72 @@ async def get_students(
         "data": enriched_students
     }
 
+@router.post("/list")
+async def list_students(
+    filters: StudentFilter,
+    user: dict = Depends(get_current_user)
+):
+    skip = (filters.page - 1) * filters.size
+
+    section_oid = safe_object_id(filters.sectionId)
+    classroom_oid = safe_object_id(filters.classroomId)
+    session_oid = safe_object_id(filters.sessionId)
+
+    query = {}
+    if section_oid:
+        query["section"] = section_oid
+    if classroom_oid:
+        query["student_class"] = classroom_oid
+    if session_oid:
+        query["session"] = session_oid
+
+    if filters.search:
+        query["$or"] = [
+            {"firstname": {"$regex": filters.search, "$options": "i"}},
+            {"middlename": {"$regex": filters.search, "$options": "i"}},
+            {"lastname": {"$regex": filters.search, "$options": "i"}}
+        ]
+
+    total = await students_collection.count_documents(query)
+
+    students = (
+        await students_collection.find(query)
+        .skip(skip)
+        .limit(filters.size)
+        .to_list(length=filters.size)
+    )
+
+    enriched_students = []
+    for s in students:
+        s["_id"] = str(s["_id"])
+        sessionData = await sessions_collection.find_one({"_id": ObjectId(s["session"])})
+        classroomData = await classrooms_collection.find_one({"_id": ObjectId(s["student_class"])})
+        sectionData = await sections_collection.find_one({"_id": ObjectId(s["section"])})
+
+        s["session"] = {
+            "_id": str(sessionData["_id"]),
+            "name": f"{sessionData.get('start_year')}-{sessionData.get('end_year')}"
+        } if sessionData else None
+
+        s["student_class"] = {
+            "_id": str(classroomData["_id"]),
+            "name": classroomData.get("classroom_name")
+        } if classroomData else None
+
+        s["section"] = {
+            "_id": str(sectionData["_id"]),
+            "name": sectionData.get("section_name")
+        } if sectionData else None
+
+        enriched_students.append(s)
+
+    return {
+        "page": filters.page,
+        "size": filters.size,
+        "total": total,
+        "pages": (total + filters.size - 1) // filters.size,
+        "data": enriched_students
+    }
 
 @router.put("/update/{student_id}")
 async def update_student(

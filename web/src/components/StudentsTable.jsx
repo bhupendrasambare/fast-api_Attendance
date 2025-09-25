@@ -4,84 +4,89 @@ import { Button } from "react-bootstrap";
 import api from "../services/api";
 import { BASE_LINK } from "../services/urls";
 
-const StudentDataTable = ({ onAdd, studentId, sectionId, classroomId, sessionId }) => {
+const StudentDataTable = ({ onAdd, sectionId, classroomId, sessionId }) => {
   const [students, setStudents] = useState([]);
-  const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [totalRows, setTotalRows] = useState(0);
+  const [perPage, setPerPage] = useState(10);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+
+  const fetchStudents = async (pageNum = page, size = perPage, searchTerm = search) => {
+    setLoading(true);
+    try {
+      const res = await api.post("/students/list", {
+        page: pageNum,
+        size,
+        search: searchTerm,
+        sectionId,
+        classroomId,
+        sessionId,
+      });
+
+      setStudents(res.data.data || []);
+      setTotalRows(res.data.total || 0);
+    } catch (err) {
+      console.error("Error fetching students:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const res = await api.get(`/students/get?sectionId=${sectionId}&classroomId=${classroomId}&sessionId=${sessionId}`); 
-        console.log("Full API response:", res.data);
-        console.log("First student:", res.data.data?.[0]);
-
-        setStudents(res.data.data || []);
-        setFiltered(res.data.data || []);
-      } catch (err) {
-        console.error("Error fetching students:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchStudents();
   }, [sectionId, classroomId, sessionId]);
 
-const columns = [
-  {
-    name: "Photo",
-    selector: (row) =>
-      <>
-        <img 
-            className="m-3"
-            src={`${BASE_LINK}${row.image_name}`}
-            alt={`${row.firstname}'s image`}  width={100}/>
-      </>,
-    sortable: true,
-  },
-  {
-    name: "Full Name",
-    selector: (row) =>
-      `${row.firstname || ""} ${row.middlename || ""} ${row.lastname || ""}`,
-    sortable: true,
-  },
-  {
-    name: "Section",
-    selector: (row) =>
-      row.section?.name ||
-      row.section?.section_name ||
-      "(Not Set)",
-    sortable: true,
-  },
-  {
-  name: "Class",
-  selector: (row) =>
-    row.student_class?.name ||
-    row.student_class?.classroom_name ||
-    row.student_class?.class_name ||
-    "(Not Set)",
-  sortable: true,
-},
-{
-  name: "Session",
-  selector: (row) =>
-    row.session?.name ||
-    `${row.session?.start_year || ""} - ${row.session?.end_year || ""}` ||
-    "(Not Set)",
-  sortable: true,
-},
-];
+  const handlePageChange = (pageNum) => {
+    setPage(pageNum);
+    fetchStudents(pageNum);
+  };
+
+  const handlePerRowsChange = async (newPerPage, pageNum) => {
+    setPerPage(newPerPage);
+    fetchStudents(pageNum, newPerPage);
+  };
 
   const handleSearch = (e) => {
-    const value = e.target.value.toLowerCase();
-    const result = students.filter((s) =>
-      `${s.firstname} ${s.middlename} ${s.lastname}`
-        .toLowerCase()
-        .includes(value)
-    );
-    setFiltered(result);
+    const value = e.target.value;
+    setSearch(value);
+    fetchStudents(1, perPage, value); // reset to page 1 when searching
   };
+
+  const columns = [
+    {
+      name: "Photo",
+      selector: (row) => (
+        <img
+          className="m-3"
+          src={`${BASE_LINK}${row.image_name}`}
+          alt={`${row.firstname}'s image`}
+          width={100}
+        />
+      ),
+      sortable: false,
+    },
+    {
+      name: "Full Name",
+      selector: (row) => `${row.firstname || ""} ${row.middlename || ""} ${row.lastname || ""}`,
+      sortable: true,
+    },
+    {
+      name: "Section",
+      selector: (row) => row.section?.name || "(Not Set)",
+      sortable: true,
+    },
+    {
+      name: "Class",
+      selector: (row) => row.student_class?.name || "(Not Set)",
+      sortable: true,
+    },
+    {
+      name: "Session",
+      selector: (row) => row.session?.name || "(Not Set)",
+      sortable: true,
+    },
+  ];
 
   return (
     <div className="shadow-lg py-3 px-1 mx-1 rounded">
@@ -98,11 +103,14 @@ const columns = [
 
       <DataTable
         columns={columns}
-        data={filtered}
+        data={students}
         progressPending={loading}
         pagination
+        paginationServer
+        paginationTotalRows={totalRows}
+        onChangeRowsPerPage={handlePerRowsChange}
+        onChangePage={handlePageChange}
         highlightOnHover
-        pointerOnHover
         striped
         subHeader
         subHeaderComponent={
@@ -110,6 +118,7 @@ const columns = [
             type="text"
             placeholder="Search..."
             className="form-control w-25"
+            value={search}
             onChange={handleSearch}
           />
         }
