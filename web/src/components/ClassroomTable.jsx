@@ -18,7 +18,7 @@ const ClassroomTable = ({ classrooms, setClassroomId, onAdd, classroomId }) => {
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>#</th>
+            <th></th>
             <th>Session</th>
             <th>Status</th>
             <th>Class Name</th>

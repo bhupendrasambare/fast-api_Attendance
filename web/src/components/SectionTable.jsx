@@ -23,7 +23,7 @@ const SectionTable = ({ sections, setSectionId, onAdd, sectionId }) => {
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>#</th>
+            <th></th>
             <th>Section name</th>
             <th>Class name</th>
             <th>Session</th>
